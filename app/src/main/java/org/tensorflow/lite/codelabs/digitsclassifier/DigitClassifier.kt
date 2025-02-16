@@ -94,9 +94,29 @@ class DigitClassifier(private val context: Context) {
   private fun classify(bitmap: Bitmap): String {
     check(isInitialized) { "TF Lite Interpreter is not initialized yet." }
 
-    // TODO: Add code to run inference with TF Lite.
+    // Preprocessing: resize the input image to match the model input shape.
+    val resizedImage = Bitmap.createScaledBitmap(
+      bitmap,
+      inputImageWidth,
+      inputImageHeight,
+      true
+    )
 
-    return "Let's add TensorFlow Lite code!"
+    val byteBuffer = convertBitmapToByteBuffer(resizedImage)
+
+    // Define an array to store the model output.
+    val output = Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) }
+
+    // Run inference with the input data.
+    interpreter?.run(byteBuffer, output)
+
+    // Post-processing: find the digit that has the highest probability and return it as a
+    // human-readable string.
+    val result = output[0]
+    val maxIndex = result.indices.maxByOrNull { result[it] } ?: -1
+    val resultString = "Prediction Result: %d\nConfidence: %2f".format(maxIndex, result[maxIndex])
+
+    return resultString
   }
 
   fun classifyAsync(bitmap: Bitmap): Task<String> {
