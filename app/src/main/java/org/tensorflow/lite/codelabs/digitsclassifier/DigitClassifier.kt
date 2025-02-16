@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -28,7 +29,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class DigitClassifier(private val context: Context) {
-  // TODO: Add a TF Lite interpreter as a field.
+  private var interpreter: Interpreter? = null
 
   var isInitialized = false
     private set
@@ -55,9 +56,26 @@ class DigitClassifier(private val context: Context) {
 
   @Throws(IOException::class)
   private fun initializeInterpreter() {
-    // TODO: Load the TF Lite model from file and initialize an interpreter.
+    // Load the TF Lite model from the asset folder.
+    val assetManager = context.assets
+    val model = loadModelFile(assetManager, "mnist.tflite")
+    val interpreter = Interpreter(model)
 
-    // TODO: Read the model input shape from model file.
+    // Read input shape from model file
+    val inputShape = interpreter.getInputTensor(0).shape()
+    inputImageWidth = inputShape[1]
+    inputImageHeight = inputShape[2]
+
+    // modelInputSize indicates how many bytes of memory we should allocate to store the input for
+    // our TensorFlow Lite model.
+    // FLOAT_TYPE_SIZE indicates how many bytes our input data type will require. We use float32,
+    // so it is 4 bytes.
+    // PIXEL_SIZE indicates how many color channels there are in each pixel. Our input image is a
+    // monochrome image, so we only have 1 color channel.
+    modelInputSize = FLOAT_TYPE_SIZE * inputImageWidth * inputImageHeight * PIXEL_SIZE
+
+    // Finish interpreter initialization
+    this.interpreter = interpreter
 
     isInitialized = true
     Log.d(TAG, "Initialized TFLite interpreter.")
@@ -92,7 +110,9 @@ class DigitClassifier(private val context: Context) {
 
   fun close() {
     executorService.execute {
-      // TODO: close the TF Lite interpreter here
+      // After we have finished using the TensorFlow Lite interpreter, we should close it to free up
+      // resources.
+      interpreter?.close()
 
 
       Log.d(TAG, "Closed TFLite interpreter.")
