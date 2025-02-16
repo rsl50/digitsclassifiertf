@@ -114,7 +114,7 @@ class DigitClassifier(private val context: Context) {
     // human-readable string.
     val result = output[0]
     val maxIndex = result.indices.maxByOrNull { result[it] } ?: -1
-    val resultString = "Prediction Result: %d\nConfidence: %2f".format(maxIndex, result[maxIndex])
+    val resultString = "Prediction Result: %d\nConfidence: %.2f%%".format(maxIndex, result[maxIndex] * 100)
 
     return resultString
   }
