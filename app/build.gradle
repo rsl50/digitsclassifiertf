@@ -17,7 +17,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // TODO: Add an option to avoid compressing TF Lite model file
+    aaptOptions {
+        noCompress "tflite"
+    }
 
     buildTypes {
         release {
@@ -50,8 +52,7 @@ dependencies {
     implementation libs.androidx.constraintlayout
     implementation libs.androiddraw
     implementation libs.play.services.tasks
-
-    //TODO: Add TF Lite
+    implementation libs.tensorflow.lite
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

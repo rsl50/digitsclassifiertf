@@ -11,6 +11,7 @@ activity = "1.10.0"
 constraintlayout = "2.2.0"
 androiddraw = "v0.1"
 playServicesTasks = "18.2.0"
+tensorflowLite = "2.17.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -23,6 +24,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androiddraw = { group = "com.github.divyanshub024", name = "AndroidDraw", version.ref = "androiddraw" }
 play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "playServicesTasks" }
+tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
